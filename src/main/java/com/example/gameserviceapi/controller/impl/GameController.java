@@ -1,5 +1,6 @@
 package com.example.gameserviceapi.controller.impl;
 
+import com.example.gameserviceapi.commons.contants.ApiPathVariables;
 import com.example.gameserviceapi.commons.entities.Game;
 import com.example.gameserviceapi.controller.GameApi;
 import com.example.gameserviceapi.service.GameService;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Para poner que es un controller
 @RestController
-@RequestMapping("/games")
+@RequestMapping(ApiPathVariables.V1_ROUTE + ApiPathVariables.GAME_ROUTE)
 public class GameController implements GameApi {
 
     private final GameService gameService;
@@ -22,11 +22,10 @@ public class GameController implements GameApi {
         this.gameService = gameService;
     }
 
-
     @Override
     public ResponseEntity<Game> saveGame(@RequestHeader("userIdRequest") String userId, @RequestBody Game game) {
-        System.out.println(userId);
-        Game gameCreated = this.gameService.saveGame(game);
+        game.setUserId(Integer.parseInt(userId));
+        Game gameCreated = this.gameService.saveGame(userId, game);
         return ResponseEntity.ok(gameCreated);
     }
 
@@ -48,8 +47,8 @@ public class GameController implements GameApi {
     }
 
     @Override
-    public ResponseEntity<Game> updateGame(Game game) {
+    public ResponseEntity<Game> updateGame(@RequestBody Game game) {
         return ResponseEntity.ok(this.gameService.updateGame(game));
     }
-
 }
+

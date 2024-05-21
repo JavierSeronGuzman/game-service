@@ -19,8 +19,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game saveGame(Game gameRequest){
-       return this.gameRepository.save(gameRequest);
+    public Game saveGame(String userId, Game gameRequest) {
+        gameRequest.setUserId(Integer.parseInt(userId));
+        return this.gameRepository.save(gameRequest);
     }
 
     @Override
@@ -28,6 +29,7 @@ public class GameServiceImpl implements GameService {
         return this.gameRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND, "Error finding game"));
     }
+
     @Override
     public void deleteGameById(String id) {
         Optional.of(id)
@@ -37,8 +39,9 @@ public class GameServiceImpl implements GameService {
                 })
                 .orElseThrow(() -> new GameException(HttpStatus.BAD_REQUEST, "Error finding game"));
     }
+
     @Override
-    public List<Game> getAllGames(){
+    public List<Game> getAllGames() {
         return this.gameRepository.findAll();
     }
 
@@ -54,6 +57,8 @@ public class GameServiceImpl implements GameService {
         return Game.builder()
                 .id(gameRequested.getId())
                 .name(gameRequested.getName())
+                .userId(gameRequested.getUserId())
                 .build();
     }
 }
+
